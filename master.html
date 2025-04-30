@@ -77,14 +77,34 @@
           </button>
         </div>
       </form>
+      </script>
       <div class="mt-6">
         <button
+          id="ver-usuarios-btn"
           type="button"
           class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-md hover:bg-blue-700 transition"
         >
           Ver Usuarios
         </button>
       </div>
+
+      <section id="usuarios-lista" class="hidden mt-6 bg-white p-4 rounded-lg shadow-md max-w-7xl">
+        <h3 class="text-xl font-semibold mb-4">Usuarios Registrados</h3>
+        <div class="overflow-x-auto">
+          <table class="min-w-full border border-gray-300 rounded-md">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="border border-gray-300 px-4 py-2 text-left">Usuario</th>
+                <th class="border border-gray-300 px-4 py-2 text-left">Rol</th>
+                <th class="border border-gray-300 px-4 py-2 text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="usuarios-tbody">
+              <!-- Usuarios se listarán aquí -->
+            </tbody>
+          </table>
+        </div>
+      </section>
     </section>
 
     <!-- Subida de Productos -->
@@ -199,6 +219,90 @@
         </div>
       </div>
     </section>
+
+    <script>
+      const crearUsuarioForm = document.getElementById('crear-usuario-form');
+      const verUsuariosBtn = document.getElementById('ver-usuarios-btn');
+      const usuariosLista = document.getElementById('usuarios-lista');
+      const usuariosTbody = document.getElementById('usuarios-tbody');
+
+      // Almacenar usuarios en memoria (simulación)
+      let usuarios = [
+        { usuario: 'master', rol: 'master' },
+        { usuario: 'supervisor', rol: 'supervisor' },
+        { usuario: 'afiliado', rol: 'afiliado' }
+      ];
+
+      function renderUsuarios() {
+        usuariosTbody.innerHTML = '';
+        const roles = ['master', 'supervisor', 'afiliado'];
+        roles.forEach((rol) => {
+          const usuariosPorRol = usuarios.filter(u => u.rol === rol);
+          if (usuariosPorRol.length > 0) {
+            // Fila de encabezado para el rol
+            const rolRow = document.createElement('tr');
+            rolRow.innerHTML = `
+              <td colspan="3" class="bg-gray-200 font-semibold px-4 py-2">${rol.charAt(0).toUpperCase() + rol.slice(1)}</td>
+            `;
+            usuariosTbody.appendChild(rolRow);
+
+            usuariosPorRol.forEach((usuarioObj) => {
+              const tr = document.createElement('tr');
+              tr.innerHTML = `
+                <td class="border border-gray-300 px-4 py-2">${usuarioObj.usuario}</td>
+                <td class="border border-gray-300 px-4 py-2">${usuarioObj.rol}</td>
+                <td class="border border-gray-300 px-4 py-2 text-center">
+                  ${usuarioObj.rol === 'master' ? '' : '<button class="eliminar-btn bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition">Eliminar</button>'}
+                </td>
+              `;
+              usuariosTbody.appendChild(tr);
+
+              if (usuarioObj.rol !== 'master') {
+                tr.querySelector('.eliminar-btn').addEventListener('click', () => {
+                  usuarios = usuarios.filter(u => u.usuario !== usuarioObj.usuario);
+                  renderUsuarios();
+                });
+              }
+            });
+          }
+        });
+      }
+
+      crearUsuarioForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const usuario = crearUsuarioForm.usuario_gestion.value.trim();
+        const contrasena = crearUsuarioForm.contrasena_gestion.value.trim();
+        const rol = crearUsuarioForm.rol_gestion.value;
+
+        if (!usuario || !contrasena || !rol) {
+          alert('Por favor complete todos los campos.');
+          return;
+        }
+
+        if (usuarios.some(u => u.usuario === usuario)) {
+          alert('El usuario ya existe.');
+          return;
+        }
+
+        usuarios.push({ usuario, rol });
+        alert('Usuario creado correctamente (simulado).');
+        crearUsuarioForm.reset();
+        renderUsuarios();
+      });
+
+      verUsuariosBtn.addEventListener('click', () => {
+        usuariosLista.classList.toggle('hidden');
+        if (!usuariosLista.classList.contains('hidden')) {
+          renderUsuarios();
+        }
+      });
+
+      // Logout button
+      const logoutButton = document.getElementById('logout-button');
+      logoutButton.addEventListener('click', () => {
+        window.location.href = 'index.html';
+      });
+    </script>
   </main>
 </body>
 </html>
