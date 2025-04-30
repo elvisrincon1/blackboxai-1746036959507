@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel Afiliado - Plataforma de Afiliados</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen p-6">
+  <header class="max-w-7xl mx-auto mb-8">
+    <h1 class="text-3xl font-semibold text-gray-800">Panel de Afiliado</h1>
+  </header>
+
+  <main class="max-w-7xl mx-auto space-y-12">
+    <!-- Productos Disponibles para Afiliados -->
+    <section class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-700">Productos Disponibles para Afiliados</h2>
+      <div id="productos-disponibles" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Ejemplo de producto -->
+        <div class="producto bg-gray-100 p-4 rounded-md shadow-sm flex flex-col">
+          <h3 class="font-semibold text-gray-800 mb-2">Producto A</h3>
+          <p class="descripcion text-gray-600 text-sm flex-grow">Descripción breve del producto A.</p>
+          <div class="mt-2 flex space-x-2">
+            <button
+              class="copiar-descripcion bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition flex items-center"
+              title="Copiar descripción"
+            >
+              <i class="fas fa-copy mr-1"></i> Copiar
+            </button>
+            <button
+              class="descargar-imagenes bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700 transition flex items-center"
+              title="Descargar imágenes"
+            >
+              <i class="fas fa-download mr-1"></i> Descargar
+            </button>
+            <button
+              class="publicar-producto bg-gray-400 text-white px-3 py-1 rounded-md cursor-not-allowed"
+              disabled
+            >
+              Ya Publicado!
+            </button>
+          </div>
+        </div>
+        <div class="producto bg-gray-100 p-4 rounded-md shadow-sm flex flex-col">
+          <h3 class="font-semibold text-gray-800 mb-2">Producto B</h3>
+          <p class="descripcion text-gray-600 text-sm flex-grow">Descripción breve del producto B.</p>
+          <div class="mt-2 flex space-x-2">
+            <button
+              class="copiar-descripcion bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition flex items-center"
+              title="Copiar descripción"
+            >
+              <i class="fas fa-copy mr-1"></i> Copiar
+            </button>
+            <button
+              class="descargar-imagenes bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700 transition flex items-center"
+              title="Descargar imágenes"
+            >
+              <i class="fas fa-download mr-1"></i> Descargar
+            </button>
+            <button
+              class="publicar-producto bg-indigo-600 text-white px-3 py-1 rounded-md hover:bg-indigo-700 transition"
+            >
+              Publicar
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Productos ya publicados -->
+    <section class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-700">Productos ya publicados</h2>
+      <div id="productos-publicados" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Productos movidos aquí al publicar -->
+      </div>
+    </section>
+  </main>
+
+  <div class="max-w-7xl mx-auto p-6">
+    <button
+      id="logout-button"
+      class="bg-red-600 text-white font-semibold py-2 px-6 rounded-md hover:bg-red-700 transition"
+    >
+      Cerrar Sesión
+    </button>
+  </div>
+
+  <script>
+    // Función para copiar texto al portapapeles
+    function copiarAlPortapapeles(texto) {
+      navigator.clipboard.writeText(texto).then(() => {
+        alert('Descripción copiada al portapapeles');
+      });
+    }
+
+    // Función para descargar imágenes (simulada)
+    function descargarImagenes() {
+      alert('Funcionalidad de descarga de imágenes no implementada en esta demo.');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const productosDisponibles = document.getElementById('productos-disponibles');
+      const productosPublicados = document.getElementById('productos-publicados');
+      const logoutButton = document.getElementById('logout-button');
+
+      productosDisponibles.addEventListener('click', (e) => {
+        if (e.target.closest('.copiar-descripcion')) {
+          const descripcion = e.target.closest('.producto').querySelector('.descripcion').textContent;
+          copiarAlPortapapeles(descripcion);
+        } else if (e.target.closest('.descargar-imagenes')) {
+          descargarImagenes();
+        } else if (e.target.closest('.publicar-producto')) {
+          const boton = e.target.closest('.publicar-producto');
+          const producto = e.target.closest('.producto');
+          // Cambiar estado del botón
+          boton.textContent = 'Ya Publicado!';
+          boton.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+          boton.classList.add('bg-gray-400', 'cursor-not-allowed');
+          boton.disabled = true;
+          // Mover producto a productos publicados
+          productosPublicados.appendChild(producto);
+        }
+      });
+
+      logoutButton.addEventListener('click', () => {
+        window.location.href = 'index.html';
+      });
+    });
+  </script>
+</body>
+</html>
