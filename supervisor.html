@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel Supervisor - Plataforma de Afiliados</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen p-6">
+  <header class="max-w-7xl mx-auto mb-8 flex justify-between items-center">
+    <h1 class="text-3xl font-semibold text-gray-800">Panel de Supervisor</h1>
+    <button
+      id="logout-button"
+      class="bg-red-600 text-white font-semibold py-2 px-6 rounded-md hover:bg-red-700 transition"
+    >
+      Cerrar Sesión
+    </button>
+  </header>
+
+  <main class="max-w-7xl mx-auto space-y-12">
+    <!-- Gestión de Afiliados -->
+    <section class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-700">Gestión de Afiliados</h2>
+      <form id="crear-afiliado-form" class="grid grid-cols-1 md:grid-cols-3 gap-6" novalidate>
+        <div>
+          <label for="usuario-afiliado" class="block text-gray-600 mb-1">Usuario:</label>
+          <input
+            type="text"
+            id="usuario-afiliado"
+            name="usuario_afiliado"
+            required
+            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+            placeholder="Nombre de usuario"
+          />
+        </div>
+        <div>
+          <label for="contrasena-afiliado" class="block text-gray-600 mb-1">Contraseña:</label>
+          <input
+            type="password"
+            id="contrasena-afiliado"
+            name="contrasena_afiliado"
+            required
+            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+            placeholder="Contraseña"
+          />
+        </div>
+        <div class="md:col-span-3">
+          <button
+            type="submit"
+            class="bg-green-600 text-white font-semibold py-2 px-6 rounded-md hover:bg-green-700 transition"
+          >
+            Crear Afiliado
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Subida de Productos -->
+    <section class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-700">Subida de Productos</h2>
+      <form class="space-y-4" action="#" method="POST" enctype="multipart/form-data" novalidate>
+        <div>
+          <label for="nombre-producto" class="block text-gray-600 mb-1">Nombre del Producto:</label>
+          <input
+            type="text"
+            id="nombre-producto"
+            name="nombre_producto"
+            required
+            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+            placeholder="Nombre del producto"
+          />
+        </div>
+        <div>
+          <label for="descripcion-producto" class="block text-gray-600 mb-1">Descripción:</label>
+          <textarea
+            id="descripcion-producto"
+            name="descripcion_producto"
+            rows="3"
+            required
+            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 transition resize-none"
+            placeholder="Descripción del producto"
+          ></textarea>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="precio-sugerido" class="block text-gray-600 mb-1">Precio Sugerido:</label>
+            <input
+              type="number"
+              id="precio-sugerido"
+              name="precio_sugerido"
+              min="0"
+              step="0.01"
+              required
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+              placeholder="Precio sugerido"
+            />
+          </div>
+          <div>
+            <label for="precio-afiliado" class="block text-gray-600 mb-1">Precio para Afiliado:</label>
+            <input
+              type="number"
+              id="precio-afiliado"
+              name="precio_afiliado"
+              min="0"
+              step="0.01"
+              required
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+              placeholder="Precio para afiliado"
+            />
+          </div>
+        </div>
+        <div>
+          <label for="imagenes-producto" class="block text-gray-600 mb-1">Imágenes del Producto:</label>
+          <input
+            type="file"
+            id="imagenes-producto"
+            name="imagenes_producto"
+            accept="image/*"
+            multiple
+            class="w-full"
+          />
+        </div>
+        <button
+          type="submit"
+          class="bg-green-600 text-white font-semibold py-2 px-6 rounded-md hover:bg-green-700 transition"
+        >
+          Publicar Producto
+        </button>
+      </form>
+    </section>
+
+    <!-- Productos Disponibles -->
+    <section class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-700">Productos Disponibles</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-gray-100 p-4 rounded-md shadow-sm">
+          <h3 class="font-semibold text-gray-800 mb-2">Producto 1</h3>
+          <p class="text-gray-600 text-sm">Descripción breve del producto 1.</p>
+          <p class="text-green-600 font-semibold mt-2">Precio: $100.00</p>
+        </div>
+        <div class="bg-gray-100 p-4 rounded-md shadow-sm">
+          <h3 class="font-semibold text-gray-800 mb-2">Producto 2</h3>
+          <p class="text-gray-600 text-sm">Descripción breve del producto 2.</p>
+          <p class="text-green-600 font-semibold mt-2">Precio: $150.00</p>
+        </div>
+        <div class="bg-gray-100 p-4 rounded-md shadow-sm">
+          <h3 class="font-semibold text-gray-800 mb-2">Producto 3</h3>
+          <p class="text-gray-600 text-sm">Descripción breve del producto 3.</p>
+          <p class="text-green-600 font-semibold mt-2">Precio: $200.00</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
