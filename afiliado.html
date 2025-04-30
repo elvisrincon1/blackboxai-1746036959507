@@ -113,26 +113,102 @@
       const productosPublicados = document.getElementById('productos-publicados');
       const logoutButton = document.getElementById('logout-button');
 
-      productosDisponibles.addEventListener('click', (e) => {
-        if (e.target.closest('.copiar-descripcion')) {
-          const descripcion = e.target.closest('.producto').querySelector('.descripcion').textContent;
-          copiarAlPortapapeles(descripcion);
-        } else if (e.target.closest('.descargar-imagenes')) {
-          descargarImagenes();
-        } else if (e.target.closest('.publicar-producto')) {
-          const boton = e.target.closest('.publicar-producto');
-          const producto = e.target.closest('.producto');
-          // Cambiar estado del botón
-          boton.textContent = 'Ya Publicado!';
-          boton.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
-          boton.classList.add('bg-gray-400', 'cursor-not-allowed');
-          boton.disabled = true;
-          // Mover producto a productos publicados
-          productosPublicados.appendChild(producto);
+      async function fetchProductos() {
+        const res = await fetch('/api/products');
+        if (!res.ok) {
+          alert('Error al obtener productos');
+          return [];
         }
-      });
+        return await res.json();
+      }
 
-      logoutButton.addEventListener('click', () => {
+      function createProductoCard(producto, isPublicado) {
+        const div = document.createElement('div');
+        div.className = 'producto bg-gray-100 p-4 rounded-md shadow-sm flex flex-col';
+
+        const images = producto.images ? producto.images.split(',') : [];
+        const imageTag = images.length > 0 ? `<img src="/uploads/${images[0]}" alt="${producto.name}" class="mb-2 rounded-md w-full h-40 object-cover" />` : '';
+
+        div.innerHTML = `
+          ${imageTag}
+          <h3 class="font-semibold text-gray-800 mb-2">${producto.name}</h3>
+          <p class="descripcion text-gray-600 text-sm flex-grow">${producto.description}</p>
+          <div class="mt-2 flex space-x-2">
+            <button
+              class="copiar-descripcion bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition flex items-center"
+              title="Copiar descripción"
+            >
+              <i class="fas fa-copy mr-1"></i> Copiar
+            </button>
+            <button
+              class="descargar-imagenes bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700 transition flex items-center"
+              title="Descargar imágenes"
+            >
+              <i class="fas fa-download mr-1"></i> Descargar
+            </button>
+            ${isPublicado ? `<button
+              class="publicar-producto bg-gray-400 text-white px-3 py-1 rounded-md cursor-not-allowed"
+              disabled
+            >
+              Ya Publicado!
+            </button>` : `<button
+              class="publicar-producto bg-indigo-600 text-white px-3 py-1 rounded-md hover:bg-indigo-700 transition"
+            >
+              Publicar
+            </button>`}
+          </div>
+        `;
+
+        if (!isPublicado) {
+          const btn = div.querySelector('.publicar-producto');
+          btn.addEventListener('click', async () => {
+            try {
+              const res = await fetch(`/api/products/${producto.id}/publish`, { method: 'POST' });
+              if (res.ok) {
+                alert('Producto marcado como publicado');
+                loadProductos();
+              } else {
+                alert('Error al marcar producto como publicado');
+              }
+            } catch (error) {
+              alert('Error al marcar producto como publicado');
+            }
+          });
+        }
+
+        div.querySelector('.copiar-descripcion').addEventListener('click', () => {
+          copiarAlPortapapeles(producto.description);
+        });
+
+        div.querySelector('.descargar-imagenes').addEventListener('click', () => {
+          descargarImagenes();
+        });
+
+        return div;
+      }
+
+      async function loadProductos() {
+        const productos = await fetchProductos();
+        productosDisponibles.innerHTML = '';
+        productosPublicados.innerHTML = '';
+        let hasPublicados = false;
+
+        productos.forEach(producto => {
+          if (producto.published) {
+            hasPublicados = true;
+            productosPublicados.appendChild(createProductoCard(producto, true));
+          } else {
+            productosDisponibles.appendChild(createProductoCard(producto, false));
+          }
+        });
+
+        document.getElementById('productos-publicados-section').classList.toggle('hidden', !hasPublicados);
+      }
+
+      loadProductos();
+
+      logoutButton.addEventListener('click', async () => {
+        await fetch('/api/logout', { method: 'POST' });
         window.location.href = 'index.html';
       });
     });
