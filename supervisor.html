@@ -68,7 +68,7 @@
     <!-- Subida de Productos -->
     <section class="bg-white p-6 rounded-lg shadow-md">
       <h2 class="text-2xl font-semibold mb-4 text-gray-700">Subida de Productos</h2>
-      <form class="space-y-4" action="#" method="POST" enctype="multipart/form-data" novalidate>
+      <form id="producto-form" class="space-y-4" novalidate>
         <div>
           <label for="nombre-producto" class="block text-gray-600 mb-1">Nombre del Producto:</label>
           <input
@@ -137,6 +137,40 @@
           Publicar Producto
         </button>
       </form>
+      <p id="error-message" class="text-red-600 mt-2 hidden">El precio sugerido debe ser mayor que el precio para afiliado.</p>
+      <script>
+        const productoForm = document.getElementById('producto-form');
+        const errorMessage = document.getElementById('error-message');
+        productoForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const precioSugerido = parseFloat(document.getElementById('precio-sugerido').value);
+          const precioAfiliado = parseFloat(document.getElementById('precio-afiliado').value);
+          if (precioSugerido <= precioAfiliado) {
+            errorMessage.classList.remove('hidden');
+            return;
+          } else {
+            errorMessage.classList.add('hidden');
+          }
+
+          const formData = new FormData(productoForm);
+
+          try {
+            const res = await fetch('/api/products', {
+              method: 'POST',
+              body: formData
+            });
+            if (res.ok) {
+              alert('Producto publicado correctamente');
+              productoForm.reset();
+            } else {
+              const data = await res.json();
+              alert('Error: ' + (data.error || 'Error desconocido'));
+            }
+          } catch (error) {
+            alert('Error al publicar producto');
+          }
+        });
+      </script>
     </section>
 
     <!-- Productos Disponibles -->
